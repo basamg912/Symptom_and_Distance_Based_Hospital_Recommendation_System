@@ -4,8 +4,6 @@ import torch
 from sentence_transformers import SentenceTransformer, util
 import os
 
-model = SentenceTransformer('jhgan/ko-sroberta-sts')
-
 def compute_hospital_embed(hospital_info,model):
     #text_embedding = model.encode(text, convert_to_tensor= True)
     weights = {

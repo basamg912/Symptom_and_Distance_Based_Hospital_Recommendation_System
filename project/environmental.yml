@@ -1,0 +1,19 @@
+name: hospital
+channels:
+- default
+- pytorch
+- conda-forge
+dependencies:
+- python=3.11
+- pandas>=1.5.3,<2.1.0               # 병원 정보 DataFrame 처리
+- numpy>=1.21.0,<2.0              # 수치 연산 (UMAP, sklearn 등 기반)
+- python-dotenv=1.1.0
+
+- scikit-learn>=1.2.0,<1.5.0        # UMAP, KMeans, 전처리
+- umap-learn>=0.5.3,<0.6.0          # 차원 축소
+- flask>=2.2.0,<3.0.0                # 웹 서비스 구축용 (FastAPI 대신 사용 시)
+- pip
+- pip:
+  - torch>=2.10.0               # SentenceTransformer 벡터 연산
+  - sentence-transformers>=2.2.2,<3.0 # SBERT 기반 텍스트 임베딩
+  - google-genai==1.62.0 # Gemini API 호출 (공식 SDK)

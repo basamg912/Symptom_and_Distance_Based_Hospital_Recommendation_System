@@ -1,12 +1,12 @@
-from sentence_transformers import SentenceTransformer, util
-from gemini.subject_extraction import extract_subject
+from project.model.loader import get_model
+from project.gemini.subject_extraction import extract_subject
+from sentence_transformers import util
 import torch
 import umap
 import pandas as pd
 
-model = SentenceTransformer('jhgan/ko-sroberta-sts')
-
 def get_query_embedding(text: str):
+    model = get_model()
     extract_dept = extract_subject(text)
     extract_dept= extract_dept + "성북구"
     query_embed = model.encode(extract_dept,convert_to_tensor=True)

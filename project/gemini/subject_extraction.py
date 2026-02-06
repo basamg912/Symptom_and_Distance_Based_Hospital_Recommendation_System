@@ -1,7 +1,8 @@
 from google import genai
-import os
 import re
-client = genai.Client(api_key="[ENCRYPTION_KEY]")
+from project.utils import config
+
+client = genai.Client(api_key=config.GEMINI_API_KEY)
 def extract_subject(text: str) -> str:
     try:
         response = client.models.generate_content(
@@ -14,6 +15,6 @@ def extract_subject(text: str) -> str:
         text = re.sub(r'[^\w\s가-힣]','',extract_dept)
         text = re.sub(r'\s+',' ',text)
         print(text)
-        return text 
     except Exception as e:
         print(f"Gemini 오류 : {e}")
+        return text
