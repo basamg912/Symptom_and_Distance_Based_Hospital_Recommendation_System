@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>병원 추천 시스템 | Hospital Recommendation</title>
+    <meta name="description" content="증상을 입력하면 AI가 최적의 성북구 병원을 추천해드립니다." />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+<!-- Ambient background orbs -->
+<div class="bg-orbs">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+</div>
+
+<div class="container">
+
+    <!-- ── Hero ──────────────────────────────────────────── -->
+    <header class="hero">
+        <div class="hero__icon">🏥</div>
+        <h1>AI 병원 추천 시스템</h1>
+        <p>증상을 입력하면 AI가 성북구 내 최적의 병원을 추천해드립니다</p>
+    </header>
+
+    <!-- ── Search ────────────────────────────────────────── -->
+    <section class="search-section glass" id="search-section">
+        <label for="symptom-input">증상을 입력하세요</label>
+        <textarea
+            id="symptom-input"
+            placeholder="예: 머리가 아프고 어지러워요 / 배가 아프고 소화가 안돼요..."
+            rows="4"
+        ></textarea>
+        <button class="btn-submit" id="btn-submit" type="button">
+            🔍 병원 추천 받기
+        </button>
+    </section>
+
+    <!-- ── Error ─────────────────────────────────────────── -->
+    <div class="error-message" id="error-message"></div>
+
+    <!-- ── Loading ───────────────────────────────────────── -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>AI가 증상을 분석하고 있습니다…</p>
+    </div>
+
+    <!-- ── Results ───────────────────────────────────────── -->
+    <div class="dept-badge-wrap" id="dept-badge-wrap">
+        <span class="label">추출 진료과</span>
+        <span class="dept-badge" id="dept-badge"></span>
+    </div>
+
+    <h2 class="results-title" id="results-title">추천 병원</h2>
+
+    <div class="results-grid" id="results-grid"></div>
+
+    <!-- ── Footer ────────────────────────────────────────── -->
+    <footer class="footer">
+        Symptom &amp; Distance Based Hospital Recommendation System &mdash; Powered by Gemini &amp; SBERT
+    </footer>
+
+</div>
+
+<script>
+(function () {
+    const input     = document.getElementById('symptom-input');
+    const btn       = document.getElementById('btn-submit');
+    const loading   = document.getElementById('loading');
+    const errorDiv  = document.getElementById('error-message');
+    const deptWrap  = document.getElementById('dept-badge-wrap');
+    const deptBadge = document.getElementById('dept-badge');
+    const resTitle  = document.getElementById('results-title');
+    const resGrid   = document.getElementById('results-grid');
+
+    function resetUI() {
+        errorDiv.classList.remove('active');
+        errorDiv.textContent = '';
+        deptWrap.classList.remove('active');
+        resTitle.classList.remove('active');
+        resGrid.innerHTML = '';
+    }
+
+    function showError(msg) {
+        errorDiv.textContent = msg;
+        errorDiv.classList.add('active');
+    }
+
+    function formatHours(raw) {
+        if (!raw || raw === 'nan') return '정보 없음';
+        // Replace commas with line breaks for readability
+        return raw.replace(/,\s*/g, '\n');
+    }
+
+    function createCard(hospital, index) {
+        const card = document.createElement('div');
+        card.className = 'hospital-card glass';
+        card.style.animationDelay = (index * 0.06) + 's';
+
+        const phone = hospital.telephone && hospital.telephone !== 'nan'
+            ? hospital.telephone : '정보 없음';
+        const hours = formatHours(hospital.opening_hours);
+
+        card.innerHTML = `
+            <span class="card-rank">#${index + 1}</span>
+            <div class="card-name">${hospital.hospital_name}</div>
+            <div class="card-details">
+                <div class="card-detail">
+                    <span class="icon">🩺</span>
+                    <span class="value">${hospital.medical_subject}</span>
+                </div>
+                <div class="card-detail">
+                    <span class="icon">📍</span>
+                    <span class="value">${hospital.address}</span>
+                </div>
+                <div class="card-detail">
+                    <span class="icon">📞</span>
+                    <span class="value">${phone}</span>
+                </div>
+                <div class="card-detail">
+                    <span class="icon">🕐</span>
+                    <span class="value" style="white-space:pre-line">${hours}</span>
+                </div>
+            </div>
+        `;
+        return card;
+    }
+
+    async function handleSubmit() {
+        const symptom = input.value.trim();
+        if (!symptom) {
+            resetUI();
+            showError('증상을 입력해주세요.');
+            return;
+        }
+
+        resetUI();
+        btn.disabled = true;
+        loading.classList.add('active');
+
+        try {
+            const res = await fetch('/api/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ symptom }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                showError(data.error || '서버 오류가 발생했습니다.');
+                return;
+            }
+
+            // Show extracted department
+            if (data.extracted_dept) {
+                deptBadge.textContent = data.extracted_dept;
+                deptWrap.classList.add('active');
+            }
+
+            // Render cards
+            if (data.hospitals && data.hospitals.length > 0) {
+                resTitle.classList.add('active');
+                data.hospitals.forEach(function (h, i) {
+                    resGrid.appendChild(createCard(h, i));
+                });
+            } else {
+                showError('추천 결과가 없습니다.');
+            }
+        } catch (err) {
+            showError('네트워크 오류: ' + err.message);
+        } finally {
+            btn.disabled = false;
+            loading.classList.remove('active');
+        }
+    }
+
+    btn.addEventListener('click', handleSubmit);
+
+    // Allow Ctrl+Enter / Cmd+Enter to submit
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            handleSubmit();
+        }
+    });
+})();
+</script>
+
+</body>
+</html>

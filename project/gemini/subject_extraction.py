@@ -15,6 +15,7 @@ def extract_subject(text: str) -> str:
         text = re.sub(r'[^\w\s가-힣]','',extract_dept)
         text = re.sub(r'\s+',' ',text)
         print(text)
+        return text
     except Exception as e:
         print(f"Gemini 오류 : {e}")
         return text

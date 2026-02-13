@@ -1,0 +1,369 @@
+/* ==========================================================================
+   Hospital Recommendation System – Design Tokens & Component Styles
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+:root {
+    --bg-primary: #0f0c29;
+    --bg-secondary: #302b63;
+    --bg-tertiary: #24243e;
+    --accent: #6c63ff;
+    --accent-light: #918aff;
+    --accent-glow: rgba(108, 99, 255, 0.35);
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-hover: rgba(255, 255, 255, 0.10);
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #f0f0f5;
+    --text-secondary: #a0a0b8;
+    --text-muted: #6e6e87;
+    --success: #34d399;
+    --danger: #f87171;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    --transition: 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Inter', 'Noto Sans KR', system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary), var(--bg-tertiary));
+    background-attachment: fixed;
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Ambient Background Orbs ────────────────────────────────────────────── */
+.bg-orbs {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+.bg-orbs .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.4;
+    animation: float 20s ease-in-out infinite alternate;
+}
+.bg-orbs .orb:nth-child(1) {
+    width: 500px; height: 500px;
+    background: var(--accent);
+    top: -120px; left: -120px;
+    animation-duration: 18s;
+}
+.bg-orbs .orb:nth-child(2) {
+    width: 400px; height: 400px;
+    background: #e040fb;
+    bottom: -100px; right: -100px;
+    animation-duration: 22s;
+    animation-delay: 2s;
+}
+.bg-orbs .orb:nth-child(3) {
+    width: 300px; height: 300px;
+    background: #00bcd4;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation-duration: 25s;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(40px, -30px) scale(1.05); }
+    100% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* ── Container ──────────────────────────────────────────────────────────── */
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+}
+
+/* ── Hero / Header ──────────────────────────────────────────────────────── */
+.hero {
+    text-align: center;
+    margin-bottom: 48px;
+}
+.hero__icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+}
+.hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--accent-light), #e040fb, #00bcd4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+.hero p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+/* ── Glass Card ─────────────────────────────────────────────────────────── */
+.glass {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+/* ── Search Section ─────────────────────────────────────────────────────── */
+.search-section {
+    padding: 32px;
+    margin-bottom: 40px;
+}
+.search-section label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+.search-section textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 16px 20px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    resize: vertical;
+    transition: var(--transition);
+    outline: none;
+}
+.search-section textarea::placeholder {
+    color: var(--text-muted);
+}
+.search-section textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.btn-submit {
+    margin-top: 18px;
+    width: 100%;
+    padding: 15px 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), #e040fb);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
+}
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px var(--accent-glow);
+}
+.btn-submit:active {
+    transform: translateY(0);
+}
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Loading Overlay ────────────────────────────────────────────────────── */
+.loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 60px 24px;
+    text-align: center;
+}
+.loading.active { display: flex; }
+.spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--border);
+    border-top-color: var(--accent-light);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ── Error Message ──────────────────────────────────────────────────────── */
+.error-message {
+    display: none;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    border-radius: var(--radius-sm);
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    color: var(--danger);
+    font-size: 0.95rem;
+}
+.error-message.active { display: block; }
+
+/* ── Department Badge ───────────────────────────────────────────────────── */
+.dept-badge-wrap {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+.dept-badge-wrap.active { display: flex; }
+.dept-badge-wrap span.label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+.dept-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 100px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(224, 64, 251, 0.15));
+    border: 1px solid rgba(108, 99, 255, 0.35);
+    color: var(--accent-light);
+}
+
+/* ── Results Grid ───────────────────────────────────────────────────────── */
+.results-title {
+    display: none;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+.results-title.active { display: block; }
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+/* ── Hospital Card ──────────────────────────────────────────────────────── */
+.hospital-card {
+    padding: 24px 28px;
+    transition: var(--transition);
+    animation: cardIn 0.45s ease both;
+    position: relative;
+    overflow: hidden;
+}
+.hospital-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(108,99,255,0.06), transparent);
+    opacity: 0;
+    transition: var(--transition);
+}
+.hospital-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    border-color: rgba(108, 99, 255, 0.25);
+}
+.hospital-card:hover::before { opacity: 1; }
+
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-rank {
+    position: absolute;
+    top: 16px; right: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    background: rgba(108, 99, 255, 0.15);
+    padding: 3px 10px;
+    border-radius: 100px;
+}
+.card-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-right: 50px;
+    position: relative;
+    z-index: 1;
+}
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+.card-detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+.card-detail .icon {
+    flex-shrink: 0;
+    width: 18px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+.card-detail .value {
+    line-height: 1.45;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.footer {
+    text-align: center;
+    margin-top: 60px;
+    padding: 24px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .container { padding: 36px 16px 80px; }
+    .search-section { padding: 24px; }
+    .hospital-card { padding: 20px; }
+}
